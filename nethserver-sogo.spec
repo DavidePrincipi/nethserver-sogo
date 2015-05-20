@@ -7,22 +7,16 @@ URL: %{url_prefix}/%{name}
 Source0: %{name}-%{version}.tar.gz
 BuildArch: noarch
 
-# nethserver-base requires postfix MTA:
-Requires: nethserver-mail-server >= 1.1.0-2
-Requires: nethserver-mysql >= 1.0.0
-Requires: nethserver-memcached >= 1.0.0
-Requires: nethserver-httpd >= 1.0.1-2
-Requires: sogo >= 2.3.0
-Requires: sogo-tool
-Requires: sope49-gdl1-mysql
-Requires: sogo-activesync
-Requires: libwbxml
+Requires: nethserver-mail-server
+Requires: nethserver-mysql
+Requires: nethserver-memcached
+Requires: nethserver-httpd
+Requires: docker
 
-BuildRequires: perl
 BuildRequires: nethserver-devtools 
 
 %description
-NethServer SOGo configuration
+NethServer SOGo configuration running as Docker container
 
 %prep
 %setup
@@ -31,17 +25,14 @@ NethServer SOGo configuration
 perl createlinks
 
 %install
-rm -rf $RPM_BUILD_ROOT
-(cd root; find . -depth -print | cpio -dump $RPM_BUILD_ROOT)
-%{genfilelist} $RPM_BUILD_ROOT > %{name}-%{version}-filelist
-echo "%doc COPYING" >> %{name}-%{version}-filelist
-
-%post
-
-%preun
+rm -rf %{buildroot}
+(cd root; find . -depth -print | cpio -dump %{buildroot})
+%{genfilelist} %{buildroot} > %{name}-%{version}-filelist
 
 %files -f %{name}-%{version}-filelist
 %defattr(-,root,root)
+%doc COPYING
+%dir %{_nseventsdir}/%{name}-update
 
 %changelog
 * Mon Jun 15 2015 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.5.4-1
