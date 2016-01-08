@@ -5,7 +5,7 @@
 {
   use NethServer::Directory;
   my $pwd = NethServer::Directory::getUserPassword('vmail');
-  $OUT.="0 0 * * *      sogo    /usr/sbin/sogo-tool expire-autoreply vmail:$pwd";
+  $OUT.="0 0 * * *      root    docker exec sogod /usr/sbin/sogo-tool expire-autoreply vmail:$pwd";
 }
 
 # Session cleanup - runs every minute
